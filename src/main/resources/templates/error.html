@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error - Student Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .error-container {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            border-radius: 15px;
+            padding: 50px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        .error-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+        h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        p {
+            color: #718096;
+            font-size: 16px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .btn {
+            display: inline-block;
+            padding: 14px 30px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin: 10px;
+        }
+        .btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        .btn-secondary {
+            background: #cbd5e0;
+            color: #2d3748;
+        }
+        .btn-secondary:hover {
+            background: #a0aec0;
+        }
+        .error-details {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+            text-align: left;
+        }
+        .error-details h3 {
+            color: #4a5568;
+            margin-bottom: 10px;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+        .error-details p {
+            color: #718096;
+            font-size: 14px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-icon">⚠️</div>
+        <h1>
+            <span th:if="${status != null}" th:text="${status}">500</span>
+            <span th:unless="${status != null}">Error</span>
+        </h1>
+        <h2>
+            <span th:if="${error != null}" th:text="${error}">Something Went Wrong</span>
+            <span th:unless="${error != null}">Something Went Wrong</span>
+        </h2>
+        <p>
+            <span th:if="${message != null}" th:text="${message}">An unexpected error occurred.</span>
+            <span th:unless="${message != null}">An unexpected error occurred. Please try again later.</span>
+        </p>
+        
+        <div>
+            <a href="/students" class="btn">🏠 Go to Home</a>
+            <a href="javascript:history.back()" class="btn btn-secondary">← Go Back</a>
+        </div>
+        
+        <div class="error-details">
+            <h3>Error Details</h3>
+            <p>
+                <strong>Status Code:</strong> 
+                <span th:if="${status != null}" th:text="${status}">Unknown</span>
+                <span th:unless="${status != null}">Unknown</span>
+            </p>
+            <p>
+                <strong>Error Type:</strong> 
+                <span th:if="${error != null}" th:text="${error}">Internal Server Error</span>
+                <span th:unless="${error != null}">Internal Server Error</span>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

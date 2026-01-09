@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 2.5em;
+        }
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .search-filter-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: end;
+        }
+        .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #4a5568;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        .btn-edit {
+            background: #48bb78;
+            color: white;
+            padding: 6px 12px;
+            font-size: 13px;
+        }
+        .btn-edit:hover {
+            background: #38a169;
+        }
+        .btn-delete {
+            background: #f56565;
+            color: white;
+            padding: 6px 12px;
+            font-size: 13px;
+        }
+        .btn-delete:hover {
+            background: #e53e3e;
+        }
+        .stats-bar {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            flex: 1;
+            min-width: 150px;
+            text-align: center;
+        }
+        .stat-card h3 {
+            font-size: 32px;
+            margin-bottom: 5px;
+        }
+        .stat-card p {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+        }
+        th a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        tbody tr {
+            transition: background 0.3s;
+        }
+        tbody tr:hover {
+            background: #f7fafc;
+        }
+        .actions {
+            display: flex;
+            gap: 8px;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        .pagination a,
+        .pagination span {
+            padding: 8px 15px;
+            border: 2px solid #667eea;
+            border-radius: 6px;
+            text-decoration: none;
+            color: #667eea;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .pagination a:hover {
+            background: #667eea;
+            color: white;
+        }
+        .pagination .active {
+            background: #667eea;
+            color: white;
+        }
+        .pagination .disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            border-color: #cbd5e0;
+            color: #cbd5e0;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #718096;
+        }
+        .empty-state svg {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+        <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
+        
+        <div class="top-bar">
+            <h1>📚 Student Management System</h1>
+            <a href="/students/new" class="btn btn-primary">➕ Add New Student</a>
+        </div>
+        
+        <div class="stats-bar">
+            <div class="stat-card">
+                <h3 th:text="${totalItems}">0</h3>
+                <p>Total Students</p>
+            </div>
+            <div class="stat-card">
+                <h3 th:text="${totalPages}">0</h3>
+                <p>Total Pages</p>
+            </div>
+        </div>
+        
+        <form class="search-filter-section" method="get" action="/students">
+            <div class="form-group">
+                <label for="search">🔍 Search by Name</label>
+                <input type="text" 
+                       id="search" 
+                       name="search" 
+                       th:value="${search}"
+                       placeholder="Enter student name...">
+            </div>
+            
+            <div class="form-group">
+                <label for="course">📖 Filter by Course</label>
+                <select id="course" name="course">
+                    <option value="">All Courses</option>
+                    <option th:each="c : ${courses}" 
+                            th:value="${c}" 
+                            th:text="${c}"
+                            th:selected="${c == selectedCourse}"></option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="sortBy">⬆️ Sort By</label>
+                <select id="sortBy" name="sortBy">
+                    <option value="name" th:selected="${sortBy == 'name'}">Name</option>
+                    <option value="age" th:selected="${sortBy == 'age'}">Age</option>
+                    <option value="course" th:selected="${sortBy == 'course'}">Course</option>
+                </select>
+            </div>
+            
+            <div style="display: flex; gap: 10px;">
+                <button type="submit" class="btn btn-primary">Search</button>
+                <a href="/students" class="btn btn-secondary">Clear</a>
+            </div>
+        </form>
+        
+        <div th:if="${students.isEmpty()}" class="empty-state">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+            <h2>No Students Found</h2>
+            <p th:if="${search != null or selectedCourse != null}">Try adjusting your search or filter criteria.</p>
+            <p th:unless="${search != null or selectedCourse != null}">Start by adding your first student!</p>
+        </div>
+        
+        <table th:if="${!students.isEmpty()}">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Course</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="student : ${students}">
+                    <td th:text="${student.id}">1</td>
+                    <td th:text="${student.name}">John Doe</td>
+                    <td th:text="${student.age}">20</td>
+                    <td th:text="${student.course}">Computer Science</td>
+                    <td th:text="${student.email != null ? student.email : 'N/A'}">N/A</td>
+                    <td th:text="${student.phone != null ? student.phone : 'N/A'}">N/A</td>
+                    <td>
+                        <div class="actions">
+                            <a th:href="@{/students/edit/{id}(id=${student.id})}" class="btn btn-edit">✏️ Edit</a>
+                            <a th:href="@{/students/delete/{id}(id=${student.id})}" 
+                               class="btn btn-delete"
+                               onclick="return confirm('Are you sure you want to delete this student?')">🗑️ Delete</a>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div class="pagination" th:if="${totalPages > 1}">
+            <a th:href="@{/students(page=${currentPage - 1}, search=${search}, course=${selectedCourse}, sortBy=${sortBy})}"
+               th:classappend="${currentPage == 0} ? 'disabled'"
+               th:if="${currentPage > 0}">← Previous</a>
+            
+            <span th:if="${currentPage == 0}" class="disabled">← Previous</span>
+            
+            <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+                <a th:href="@{/students(page=${i}, search=${search}, course=${selectedCourse}, sortBy=${sortBy})}"
+                   th:text="${i + 1}"
+                   th:classappend="${i == currentPage} ? 'active'">1</a>
+            </span>
+            
+            <a th:href="@{/students(page=${currentPage + 1}, search=${search}, course=${selectedCourse}, sortBy=${sortBy})}"
+               th:classappend="${currentPage + 1 >= totalPages} ? 'disabled'"
+               th:if="${currentPage + 1 < totalPages}">Next →</a>
+            
+            <span th:if="${currentPage + 1 >= totalPages}" class="disabled">Next →</span>
+        </div>
+    </div>
+    
+    <script>
+        setTimeout(function() {
+            var alerts = document.querySelectorAll('.alert');
+            for (var i = 0; i < alerts.length; i++) {
+                alerts[i].style.transition = 'opacity 0.5s';
+                alerts[i].style.opacity = '0';
+                setTimeout(function(alert) {
+                    return function() {
+                        if (alert.parentNode) {
+                            alert.parentNode.removeChild(alert);
+                        }
+                    };
+                }(alerts[i]), 500);
+            }
+        }, 5000);
+    </script>
+</body>
+</html>
